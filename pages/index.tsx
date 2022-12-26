@@ -4,27 +4,31 @@ import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
 import { Metaplex } from "@metaplex-foundation/js";
 import { Connection, clusterApiUrl, PublicKey } from "@solana/web3.js";
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
+import NftCard from '../components/nft';
 
 const connection = new Connection(clusterApiUrl("devnet"));
 const metaplex = new Metaplex(connection);
 
 const inter = Inter({ subsets: ['latin'] })
 
-
 export default function Home() {
   const mintAddress = new PublicKey("3nLcd7A14CevzFhvCzw6xJmKNRKn311DzAzrg16WLD6i");
-  const [imageUrl, setImageUrl] = useState("");
+
+  const [nftProps, setNftProps] = useState({ name: "", symbol: "", imageURI: "" });
   
   async function getNft() {
     const nft = await metaplex.nfts().findByMint({ mintAddress });
     if (nft.json != null) {
-      setImageUrl(nft.json.image || "");
-      console.log(imageUrl)
+      setNftProps({ name: nft.name || "", symbol: nft.symbol || "", imageURI: nft.json.image || "" })
     }
-    
     console.log(nft)
+    return nft
   }
+
+  useEffect(() => {
+    getNft()
+  }, [])
 
   return (
     <>
@@ -39,12 +43,12 @@ export default function Home() {
           <h1 className="font-bold text-5xl text-gray-700">
             Currently Minted Coupons
           </h1>
-          <button className='my-8 mx-2 text-2xl bg-purple-500 hover:bg-purple-600 hover:scale-105 text-white py-2 px-4 rounded-lg' onClick={getNft}>Get NFT</button>
-          {imageUrl != "" ? (
-            <img className="w-32 h-32 object-center" src={imageUrl}></img>
-          ) : (
-            <p className='text-center'>no image</p>
-          )}
+          <div className='flex flex-wrap'>
+          {nftProps ? <NftCard name={nftProps.name} symbol={nftProps.symbol} imageURI={nftProps.imageURI}/> : <p>loading...</p> }
+          <NftCard name={nftProps.name} symbol={nftProps.symbol} imageURI={nftProps.imageURI}/>
+          <NftCard name={nftProps.name} symbol={nftProps.symbol} imageURI={nftProps.imageURI}/>
+          </div>
+
         </div>
       </main>
     </>

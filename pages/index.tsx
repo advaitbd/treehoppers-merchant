@@ -1,11 +1,62 @@
-import Head from 'next/head'
-import { Inter } from '@next/font/google'
-import NavBar from '../components/navBar';
-import Dash from '../components/dash';
+import Head from "next/head";
+import { Inter } from "@next/font/google";
+import NavBar from "../components/navBar";
+import DashBoard from "../components/dashboard";
+import { useMemo, useState, useEffect } from "react";
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import {
+  GlowWalletAdapter,
+  PhantomWalletAdapter,
+  SlopeWalletAdapter,
+  SolflareWalletAdapter,
+  TorusWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
+import {
+  WalletModalProvider,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
+import { clusterApiUrl } from "@solana/web3.js";
+import { MetaplexProvider } from "./MetaplexProvider";
+import "@solana/wallet-adapter-react-ui/styles.css";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
+
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  const wallets = useMemo(
+    () => [
+      new PhantomWalletAdapter(),
+      new GlowWalletAdapter(),
+      new SlopeWalletAdapter(),
+      new SolflareWalletAdapter({ network }),
+      new TorusWalletAdapter(),
+    ],
+    [network]
+  );
+
+  const handleChange = (event) => {
+    switch (event.target.value) {
+      case "devnet":
+        setNetwork(WalletAdapterNetwork.Devnet);
+        break;
+      case "mainnet":
+        setNetwork(WalletAdapterNetwork.Mainnet);
+        break;
+      case "testnet":
+        setNetwork(WalletAdapterNetwork.Testnet);
+        break;
+      default:
+        setNetwork(WalletAdapterNetwork.Devnet);
+        break;
+    }
+  };
 
   return (
     <>
@@ -15,10 +66,18 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <NavBar/>
-        <Dash/>
-      </main>
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect>
+          <WalletModalProvider>
+            <MetaplexProvider>
+              <main>
+                <NavBar onClusterChange={handleChange}/>
+                <DashBoard />
+              </main>
+            </MetaplexProvider>
+          </WalletModalProvider>
+        </WalletProvider>
+      </ConnectionProvider>
     </>
   );
 }

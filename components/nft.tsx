@@ -15,13 +15,13 @@ export default function nftCard({ name, symbol, imageURI,attributes}: nftCardPro
         return (<div className="text-left">{body}</div>)
     }
     return (
-        <div className="flex flex-col p-2 my-2 mx-2 bg-gray-200 text-center justify-center rounded-md border-4 border-slate-400">
-        <h1 className="font-bold text-2xl text-gray-700">
+        <div className="w-64 flex flex-col p-2 my-2 mx-2 bg-gray-200 text-center justify-center rounded-md border-4 border-slate-400 dark:bg-gray-900">
+        <h1 className="font-bold text-2xl text-gray-700 dark:text-white">
             {name}
         </h1>
         <img className="mx-auto h-32 rounded-md" src={imageURI}></img>
-        <p className="text-sm text-gray-400">{symbol}</p>
-        <div className="text-sm">{attributeSection(attributeElements)}</div>
+        <p className="text-sm text-gray-400 dark:text-gray-200">{symbol}</p>
+        <div className="text-sm text-black dark:text-gray-100">{attributeSection(attributeElements)}</div>
         </div>
     );
 }

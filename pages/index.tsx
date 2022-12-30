@@ -21,11 +21,37 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import { app, database } from "./firebaseConfig"
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 
 export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
 
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  const dbInstance = collection(database, '/coupons');
+  const [mintAddresses, setMintAddresses] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  function getCoupons() {
+    getDocs(dbInstance).then((data) => {
+      const coupons = data.docs.map((item)=>{
+        return {...item.data(), id: item.id}
+      })
+
+      let addresses = []
+      for (let i = 0; i < coupons.length; i++) {
+        addresses.push(coupons[i].mintAddress)
+      }
+      setMintAddresses(addresses)
+      console.log("state",mintAddresses)
+      setLoading(false)
+    });
+  }
+
+  useEffect(() => {
+    getCoupons()
+  },[])
 
   const wallets = useMemo(
     () => [
@@ -69,7 +95,11 @@ export default function Home() {
             <MetaplexProvider>
               <main>
                 <NavBar onClusterChange={handleChange}/>
-                <DashBoard />
+                {loading ? (
+          <p className="text-center font-light">loading...</p>
+        ) : (
+          <DashBoard addresses={mintAddresses}/>
+        )}
               </main>
             </MetaplexProvider>
           </WalletModalProvider>

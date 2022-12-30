@@ -14,18 +14,25 @@ import NftCard from "./nft";
 const connection = new Connection(clusterApiUrl("devnet"));
 const metaplex = new Metaplex(connection);
 
-export default function Dashboard() {
+
+interface DashBoardProps {
+  addresses: string[];
+}
+
+export default function Dashboard({addresses}:DashBoardProps) {
   // FcCotb1Xnde3M5dGjUqY3EVcr8PwhWaVem7RUS4dFXjo
   // CEKfZFV8HZLn9QUTvhJcJqgC9qqMpvNYs7yTgAXbsDgh
   // pf6f1ZCrLkVrYVLcnKSR5FuvgFHhrqoD7TDEtKGLiRq
   // 3nLcd7A14CevzFhvCzw6xJmKNRKn311DzAzrg16WLD6i
 
   // simulating a list of coupon mints, ideally should be obtained from the firebaseDB
-  const coupons = [
-    "3nLcd7A14CevzFhvCzw6xJmKNRKn311DzAzrg16WLD6i",
-    "pf6f1ZCrLkVrYVLcnKSR5FuvgFHhrqoD7TDEtKGLiRq",
-    "FcCotb1Xnde3M5dGjUqY3EVcr8PwhWaVem7RUS4dFXjo",
-  ];
+  // const coupons = [
+  //   "3nLcd7A14CevzFhvCzw6xJmKNRKn311DzAzrg16WLD6i",
+  //   "pf6f1ZCrLkVrYVLcnKSR5FuvgFHhrqoD7TDEtKGLiRq",
+  //   "FcCotb1Xnde3M5dGjUqY3EVcr8PwhWaVem7RUS4dFXjo",
+  // ];
+
+  const coupons = addresses
   let couponKeys: PublicKey[] = [];
 
   for (let i = 0; i < coupons.length; i++) {
@@ -88,9 +95,9 @@ export default function Dashboard() {
   return (
     <>
       <div className="flex flex-col justify-center">
-        <h1 className="font-bold text-gray-800 text-5xl m-4 text-center dark:text-white">
+        {/* <h1 className="font-bold text-gray-800 text-5xl m-4 text-center dark:text-white">
           Currently Minted Coupons
-        </h1>
+        </h1> */}
         {loading ? (
           <p className="text-center font-light">loading...</p>
         ) : (

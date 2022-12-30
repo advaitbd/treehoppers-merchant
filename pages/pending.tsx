@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
 import NavBar from "../components/navBar";
+import DashBoard from "../components/dashboard";
 
 import { useMemo, useState, useEffect } from "react";
 import {
@@ -32,16 +33,30 @@ export default function Home() {
   
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const dbInstance = collection(database, '/coupons');
-  
+  const [mintAddresses, setMintAddresses] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   function getCoupons() {
     getDocs(dbInstance).then((data) => {
-      console.log( data.docs.map((item)=>{
+      const coupons = data.docs.map((item)=>{
         return {...item.data(), id: item.id}
-      }));
+      })
+
+      let addresses = []
+      for (let i = 0; i < coupons.length; i++) {
+        if (coupons[i].pending == true) {
+          addresses.push(coupons[i].mintAddress)
+        }
+      }
+      setMintAddresses(addresses)
+      console.log("state",mintAddresses)
+      setLoading(false)
     });
   }
 
-  getCoupons()
+  useEffect(() => {
+    getCoupons()
+  },[])
 
   const wallets = useMemo(
     () => [
@@ -85,7 +100,12 @@ export default function Home() {
             <MetaplexProvider>
               <main>
                 <NavBar onClusterChange={handleChange}/>
-                <h1 className='px-6 py-6 text-4xl font-bold text-center'>Coming Soon!</h1>
+                {loading ? (
+          <p className="text-center font-light">loading...</p>
+        ) : (
+          <DashBoard addresses={mintAddresses}/>
+        )}
+                
               </main>
             </MetaplexProvider>
           </WalletModalProvider>

@@ -14,7 +14,7 @@ import NftCard from "./nft";
 const connection = new Connection(clusterApiUrl("devnet"));
 const metaplex = new Metaplex(connection);
 
-export default function Dash2() {
+export default function Dashboard() {
   // FcCotb1Xnde3M5dGjUqY3EVcr8PwhWaVem7RUS4dFXjo
   // CEKfZFV8HZLn9QUTvhJcJqgC9qqMpvNYs7yTgAXbsDgh
   // pf6f1ZCrLkVrYVLcnKSR5FuvgFHhrqoD7TDEtKGLiRq

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
 import NavBar from "../components/navBar";
-import Dash2 from "../components/dashboard";
+
 import { useMemo, useState, useEffect } from "react";
 import {
   ConnectionProvider,
@@ -23,12 +23,25 @@ import { clusterApiUrl } from "@solana/web3.js";
 import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
-const inter = Inter({ subsets: ["latin"] });
+import { app, database } from "./firebaseConfig"
+import { collection, addDoc, getDocs } from 'firebase/firestore';
+
 
 export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
-
+  
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const dbInstance = collection(database, '/coupons');
+  
+  function getCoupons() {
+    getDocs(dbInstance).then((data) => {
+      console.log( data.docs.map((item)=>{
+        return {...item.data(), id: item.id}
+      }));
+    });
+  }
+
+  getCoupons()
 
   const wallets = useMemo(
     () => [
@@ -41,7 +54,7 @@ export default function Home() {
     [network]
   );
 
-  const handleChange = (event) => {
+  const handleChange = (event: { target: { value: any; }; }) => {
     switch (event.target.value) {
       case "devnet":
         setNetwork(WalletAdapterNetwork.Devnet);

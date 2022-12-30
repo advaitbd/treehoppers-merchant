@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { Inter } from "@next/font/google";
 import NavBar from "../components/navBar";
 import DashBoard from "../components/dashboard";
 import { useMemo, useState, useEffect } from "react";
@@ -23,8 +22,6 @@ import { clusterApiUrl } from "@solana/web3.js";
 import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
 
@@ -41,7 +38,7 @@ export default function Home() {
     [network]
   );
 
-  const handleChange = (event) => {
+  const handleChange = (event: { target: { value: any; }; }) => {
     switch (event.target.value) {
       case "devnet":
         setNetwork(WalletAdapterNetwork.Devnet);

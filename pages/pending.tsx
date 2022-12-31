@@ -103,7 +103,7 @@ export default function Home() {
                 {loading ? (
           <p className="text-center font-light">loading...</p>
         ) : (
-          <DashBoard addresses={mintAddresses}/>
+          <DashBoard addresses={mintAddresses} pending ={true}/>
         )}
                 
               </main>

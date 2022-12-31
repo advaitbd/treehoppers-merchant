@@ -20,6 +20,16 @@ export default function NavBar({ onClusterChange }) {
   return (
     <>
       <nav className="bg-white py-6 flex flex-wrap items-center justify-center dark:bg-[#121212]">
+      <a
+          className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
+            router.pathname === "/addCoupon"
+              ? "text-gray-800 font-bold dark:text-white"
+              : "text-gray-600 dark:text-gray-400"
+          }`}
+          href="/addCoupon"
+        >
+          Add Coupon
+        </a>
         <a
           className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
             router.pathname === "/"

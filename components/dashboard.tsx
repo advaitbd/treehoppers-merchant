@@ -21,18 +21,6 @@ interface DashBoardProps {
 }
 
 export default function Dashboard({addresses,pending}:DashBoardProps) {
-  // FcCotb1Xnde3M5dGjUqY3EVcr8PwhWaVem7RUS4dFXjo
-  // CEKfZFV8HZLn9QUTvhJcJqgC9qqMpvNYs7yTgAXbsDgh
-  // pf6f1ZCrLkVrYVLcnKSR5FuvgFHhrqoD7TDEtKGLiRq
-  // 3nLcd7A14CevzFhvCzw6xJmKNRKn311DzAzrg16WLD6i
-
-  // simulating a list of coupon mints, ideally should be obtained from the firebaseDB
-  // const coupons = [
-  //   "3nLcd7A14CevzFhvCzw6xJmKNRKn311DzAzrg16WLD6i",
-  //   "pf6f1ZCrLkVrYVLcnKSR5FuvgFHhrqoD7TDEtKGLiRq",
-  //   "FcCotb1Xnde3M5dGjUqY3EVcr8PwhWaVem7RUS4dFXjo",
-  // ];
-
   const coupons = addresses
   let couponKeys: PublicKey[] = [];
 

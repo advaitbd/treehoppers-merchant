@@ -29,7 +29,7 @@ export default function Home() {
 
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-  const dbInstance = collection(database, '/coupons');
+  const dbInstance = collection(database, '/CouponCollection');
   const [mintAddresses, setMintAddresses] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -38,7 +38,7 @@ export default function Home() {
       const coupons = data.docs.map((item)=>{
         return {...item.data(), id: item.id}
       })
-
+      
       let addresses = []
       for (let i = 0; i < coupons.length; i++) {
         addresses.push(coupons[i].mintAddress)

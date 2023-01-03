@@ -36,6 +36,7 @@ export default function Dashboard({addresses,pending}:DashBoardProps) {
 
   useEffect(() => {
     getCoupons(couponKeys).then((coupons) => {
+      console.log("fetching coupons")
       setCoupons(coupons);
       setLoading(false);
     });
@@ -53,7 +54,6 @@ export default function Dashboard({addresses,pending}:DashBoardProps) {
       const loadedNFT = await metaplex.nfts().load({ metadata: nfts[i] });
       loadedNFTs.push(loadedNFT);
     }
-    console.log(loadedNFTs);
     return loadedNFTs;
   }
   

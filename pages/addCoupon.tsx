@@ -31,6 +31,7 @@ export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
 
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const dbInstance = collection(database, '/MerchantCollection');
 
   const wallets = useMemo(
     () => [
@@ -60,33 +61,58 @@ export default function Home() {
     }
   };
 
-  async function formHandler (event: any) {
+  async function formHandler(event: any) {
     // Get data from the form.
-    console.log(event)
-    const data = {
-        Membership: event.data[0].inputResult,
-        RedemptionPoints: event.data[1].inputResult,
-        ExpiryData: event.data[2].inputResult,
-    }
-    console.log(data)
+    console.log(event);
+    const image = event.data[8].inputResult;
+    // save image in local directory from form reponse
 
-    // Send the data to the server in JSON format.
-    // const JSONdata = JSON.stringify(data)
+    const metadata = {
+      title: event.data[1].inputResult,
+      symbol: event.data[2].inputResult,
+      description: event.data[3].inputResult,
+      image:
+        "https://ipfs.io/ipfs/QmV1EYP9co69TVGF2GXzbyVXUrSXuJnGYje7JzQrzpDngY",
+      attributes: [
+        { trait_type: "Membership", value: event.data[4].inputResult },
+        { trait_type: "Redemption points", value: event.data[5].inputResult },
+        { trait_type: "Valid till", value: event.data[6].inputResult },
+        { trait_type: "owner", value: "@jackDorsey101" },
+        { trait_type: "expired", value: "false" },
+      ],
+      properties: {
+        files: [
+          {
+            uri: "https://ipfs.io/ipfs/QmV1EYP9co69TVGF2GXzbyVXUrSXuJnGYje7JzQrzpDngY",
+            type: "image/png",
+          },
+        ],
+        category: null,
+      },
+    };
 
-    // // API endpoint where we send form data.
-    // const endpoint = '/api/form'
+    const mintData = {
+      Image: "QmV1EYP9co69TVGF2GXzbyVXUrSXuJnGYje7JzQrzpDngY",
+      Symbol: event.data[2].inputResult,
+      Title: event.data[1].inputResult,
+      URI: "QmXhBer1sJgHvqdgs5Akiz5QJhyfxiiLHgNMhpb9vnRM3F",
+      maxSupply: event.data[7].inputResult,
+      merchantName: event.data[0].inputResult,
+    };
+    console.log("metadata: ", metadata);
 
-    // // Form the request for sending data to the server.
-    // const options = {
-    //     // The method is POST because we are sending data.
-    //     method: 'POST',
-    //     // Tell the server we're sending JSON.
-    //     headers: {
-    //     'Content-Type': 'application/json',
-    //     },
-    //     // Body of the request is the JSON data we created above.
-    //     body: JSONdata,
-    // }
+    // upload metadata to ipfs using /uploadData endpoint
+
+    // upload document to firebase
+    const uploadMerchantData = () => {
+      addDoc(dbInstance, mintData).then(() => {
+        console.log("uploaded form data");
+        window.location.reload(false)
+      });
+    };
+
+    uploadMerchantData();
+    
   }
 
   return (
@@ -112,10 +138,34 @@ export default function Home() {
                     data={[
                       {
                         inputWidth: "100%",
-                        name: "Membership Level",
+                        name: "Merchant Name",
                         type: "text",
                         value: "",
                       },
+                      {
+                        inputWidth: "100%",
+                        name: "Coupon Title",
+                        type: "text",
+                        value: "",
+                      },                    
+                      {
+                        inputWidth: "100%",
+                        name: "Symbol",
+                        type: "text",
+                        value: "",
+                      },
+                      {
+                        inputWidth: "100%",
+                        name: "Description",
+                        type: "text",
+                        value: "",
+                      },   
+                      {
+                        inputWidth: "100%",
+                        name: "Membership Level",
+                        type: "text",
+                        value: "",
+                      },                                         
                       {
                         name: "Redemption Points",
                         type: "number",
@@ -127,7 +177,7 @@ export default function Home() {
                         value: "",
                       },
                       {
-                        name: "Number of Coupons",
+                        name: "Supply",
                         type: "number",
                         value: "",
                       },

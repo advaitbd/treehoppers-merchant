@@ -32,7 +32,7 @@ export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
   
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  const dbInstance = collection(database, '/coupons');
+  const dbInstance = collection(database, '/CouponCollection');
   const [mintAddresses, setMintAddresses] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -49,7 +49,6 @@ export default function Home() {
         }
       }
       setMintAddresses(addresses)
-      console.log("state",mintAddresses)
       setLoading(false)
     });
   }

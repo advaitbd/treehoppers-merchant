@@ -75,16 +75,19 @@ export default function CallToActionWithAnnotation() {
         />
       </Head>
       <NavBar onClusterChange={handleChange}/>
-      <Container>
+      {/* <Container className='dark:bg-[#121212]'> */}
         <Stack
           as={Box}
           textAlign={'center'}
           spacing={{ base: 8, md: 14 }}
-          py={{ base: 20, md: 36 }}>
+          py={{ base: 20, md: 36 }}
+          className='dark:bg-[#121212]'>
           <Heading
             fontWeight={600}
             fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
-            lineHeight={'110%'}>
+            lineHeight={'110%'}
+            className='dark:text-white'>
+                
             Next-Gen coupons by <br />
             <Text as={'span'} color={'green.400'}>
               TreeHoppers
@@ -121,7 +124,7 @@ export default function CallToActionWithAnnotation() {
           </Flex>
         </Stack>
         
-      </Container>
+      {/* </Container> */}
       
     </>
   );

@@ -24,8 +24,6 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 import { app, database } from "./firebaseConfig";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
-import { Container } from "@chakra-ui/react";
-
 export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
 

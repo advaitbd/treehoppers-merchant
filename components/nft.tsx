@@ -1,12 +1,16 @@
+import { collection, addDoc, setDoc, getDocs, doc } from "firebase/firestore";
+import { app, database } from "/pages/firebaseConfig";
 interface nftCardProps {
     name: string;
     symbol: string;
     imageURI: string;
     attributes: string[];
     pending: boolean;
+    metadata: any;
+    address: string;
 }
 
-export default function nftCard({ name, symbol, imageURI,attributes,pending}: nftCardProps): JSX.Element {
+export default function nftCard({ name, symbol, imageURI,attributes,pending, metadata,address}: nftCardProps): JSX.Element {
   let attributeElements = [];
   for (let i = 0; i < attributes.length; i++) {
     attributeElements.push(
@@ -18,17 +22,37 @@ export default function nftCard({ name, symbol, imageURI,attributes,pending}: nf
       </p>
     );
   }
+
   const attributeSection = (body: any) => {
     return <div className="text-left">{body}</div>;
   };
+
+
   // Functions that handles the logic for approval or rejection of claims
   const handleApproveClick = () => {
     // If Merchant approves the use of NFT, set pending to false and expired to true
     console.log("Approved!");
+    metadata.attributes[4].value = "true"
+    console.log(metadata)
+    console.log(address)    
+    
+    const data = {
+      mintAddress: address,
+      pending: false,
+    }
+
+    const dbInstance = doc(database, '/CouponCollection',address);
+    setDoc(dbInstance, data, {merge:true}).then(() => {        
+      console.log("coupon used");
+      window.location.reload(false)
+    });    
   };
   const handleRejectClick = () => {
     // If Merchant rejects the use of NFT, set pending to false only
     console.log("Rejected!");
+
+    // set pending to false in firebase
+
   };
   return (
     <div className="w-64 flex flex-col p-2 my-2 mx-2 bg-gray-200 text-center justify-center rounded-md border-4 border-slate-400 dark:bg-gray-900">

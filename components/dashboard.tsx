@@ -64,14 +64,17 @@ export default function Dashboard({addresses,pending}:DashBoardProps) {
       couponElements.push(
         <NftCard
           key={i}
+          address={addresses[i]}
           name={coupons[i].name}
           symbol={coupons[i].symbol}
           imageURI={coupons[i].json.image}
           attributes={coupons[i].json.attributes}
           pending = {pending}
+          metadata = {coupons[i].json}
         />
       );
     }
+    console.log(coupons)
     return couponElements;
   }
 

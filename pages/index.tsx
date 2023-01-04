@@ -21,37 +21,39 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
-import { app, database } from "./firebaseConfig"
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { app, database } from "./firebaseConfig";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+
+import { Container } from "@chakra-ui/react";
 
 export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
 
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-  const dbInstance = collection(database, '/CouponCollection');
+  const dbInstance = collection(database, "/CouponCollection");
   const [mintAddresses, setMintAddresses] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   function getCoupons() {
     getDocs(dbInstance).then((data) => {
-      const coupons = data.docs.map((item)=>{
-        return {...item.data(), id: item.id}
-      })
-      
-      let addresses = []
+      const coupons = data.docs.map((item) => {
+        return { ...item.data(), id: item.id };
+      });
+
+      let addresses = [];
       for (let i = 0; i < coupons.length; i++) {
-        addresses.push(coupons[i].mintAddress)
+        addresses.push(coupons[i].mintAddress);
       }
-      setMintAddresses(addresses)
-      console.log("state",mintAddresses)
-      setLoading(false)
+      setMintAddresses(addresses);
+      console.log("state", mintAddresses);
+      setLoading(false);
     });
   }
 
   useEffect(() => {
-    getCoupons()
-  },[])
+    getCoupons();
+  }, []);
 
   const wallets = useMemo(
     () => [
@@ -64,7 +66,7 @@ export default function Home() {
     [network]
   );
 
-  const handleChange = (event: { target: { value: any; }; }) => {
+  const handleChange = (event: { target: { value: any } }) => {
     switch (event.target.value) {
       case "devnet":
         setNetwork(WalletAdapterNetwork.Devnet);
@@ -93,14 +95,15 @@ export default function Home() {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <MetaplexProvider>
-              <main>
-                <NavBar onClusterChange={handleChange}/>
+              <NavBar onClusterChange={handleChange} />
+              
                 {loading ? (
-          <p className="text-center font-light">loading...</p>
-        ) : (
-          <DashBoard addresses={mintAddresses}/>
-        )}
-              </main>
+                  <p className="text-center font-light">loading...</p>
+                ) : (
+                  <DashBoard addresses={mintAddresses} pending={false} />
+                )}
+              
+              
             </MetaplexProvider>
           </WalletModalProvider>
         </WalletProvider>

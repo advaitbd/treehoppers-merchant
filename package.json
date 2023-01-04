@@ -11,6 +11,7 @@
   "dependencies": {
     "@metaplex-foundation/js": "^0.17.12",
     "@next/font": "13.1.1",
+    "@pinata/sdk": "^2.1.0",
     "@solana/wallet-adapter-base": "^0.9.20",
     "@solana/wallet-adapter-react": "^0.15.28",
     "@solana/wallet-adapter-react-ui": "^0.9.27",
@@ -22,6 +23,8 @@
     "@web3uikit/core": "^0.2.36",
     "@web3uikit/icons": "^0.2.35",
     "@web3uikit/web3": "^0.2.2",
+    "axios": "^1.2.2",
+    "dotenv": "^16.0.3",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.1",
     "firebase": "^9.15.0",

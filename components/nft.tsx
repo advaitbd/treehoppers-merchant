@@ -1,5 +1,9 @@
 import { collection, addDoc, setDoc, getDocs, doc } from "firebase/firestore";
 import { app, database } from "/pages/firebaseConfig";
+import { useWallet } from '@solana/wallet-adapter-react';
+import { Metaplex, walletAdapterIdentity } from "@metaplex-foundation/js"
+import {Connection, clusterApiUrl, PublicKey} from "@solana/web3.js";
+
 interface nftCardProps {
     name: string;
     symbol: string;
@@ -10,8 +14,10 @@ interface nftCardProps {
     address: string;
 }
 
+
 export default function nftCard({ name, symbol, imageURI,attributes,pending, metadata,address}: nftCardProps): JSX.Element {
   let attributeElements = [];
+  const wallet = useWallet();
   for (let i = 0; i < attributes.length; i++) {
     attributeElements.push(
       <p className="m-2 " key={i}>
@@ -29,7 +35,7 @@ export default function nftCard({ name, symbol, imageURI,attributes,pending, met
 
 
   // Functions that handles the logic for approval or rejection of claims
-  const handleApproveClick = () => {
+  const handleApproveClick = async () => {
     // If Merchant approves the use of NFT, set pending to false and expired to true
     console.log("Approved!");
     metadata.attributes[4].value = "true"
@@ -44,8 +50,30 @@ export default function nftCard({ name, symbol, imageURI,attributes,pending, met
     const dbInstance = doc(database, '/CouponCollection',address);
     setDoc(dbInstance, data, {merge:true}).then(() => {        
       console.log("coupon used");
-      window.location.reload(false)
-    });    
+      // window.location.reload(false)
+    });
+    // Calls the Redeem endpoint
+    // fetch('http://localhost:3000/redeem', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     key: 'value'
+    //   }),
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   }
+    // })
+    //   .then(response => console.log(response))
+    //   .catch(error => console.error(error));
+
+    const newMetadata = "https://ipfs.io/ipfs/QmVUmswAquyRLkUyxXjqSVQeBiYVdmjwwvzjJTLUpmRZ5c"
+    
+    const connection = new Connection(clusterApiUrl('devnet'))
+    const metaplex = new Metaplex(connection)
+    metaplex.use(walletAdapterIdentity(wallet));
+    const mint = new PublicKey(address);
+
+    const nft = await metaplex.nfts().findByMint({ mintAddress: mint })
+    const { response } = await metaplex.nfts().update({ nftOrSft: nft, uri: newMetadata }, {commitment: 'processed'})
   };
   const handleRejectClick = () => {
     // If Merchant rejects the use of NFT, set pending to false only

@@ -29,9 +29,13 @@ import { pinata } from "./pinataConfig.js";
 import fs from "fs";
 import axios from "axios";
 
+import { useWallet } from '@solana/wallet-adapter-react';
+
+
 export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const { publicKey, wallet, disconnect } = useWallet();
   // const dbInstance = collection(database, '/MerchantCollection');
 
   const wallets = useMemo(
@@ -96,11 +100,25 @@ export default function Home() {
     }
   };
 
+  // upload document to firebase
+  const uploadData = (data: {}) => {
+    // const dbInstance = collection(database, '/MerchantCollection');
+    const dbInstance = doc(
+      database,
+      "/MerchantCollection",
+      data.merchantName
+    );
+    setDoc(dbInstance, data).then(() => {
+      window.location.reload(false);
+      console.log("uploaded form data");
+    });
+  };
+
   async function formHandler(event: any) {
     // Get data from the form.
-    console.log(event);
-
+    console.log(event)
     const image = event.data[8].inputResult;
+
     // Upload image to /uploadFile endpoint using Pinata
     pinataUpload(image).then(async (hash) => {
       const metadata = {
@@ -126,44 +144,48 @@ export default function Home() {
         },
       };
 
+      // upload mintData to firebase
+      
+      const mintData = {
+        Image: hash,
+        Symbol: event.data[2].inputResult,
+        Title: event.data[1].inputResult,
+        maxSupply: event.data[7].inputResult,
+        merchantName: event.data[0].inputResult,
+        metadata: metadata,
+        merchantAddress: publicKey?.toString(),
+      };
+      
+      uploadData(mintData);
+      console.log("mintdata: ", mintData);      
+
       //upload metadata to ipfs
-      fetch("http://localhost:3000/uploadData", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(metadata),
-      })
-        .then(async (res) => {
-          const metadataCID = await res.text();
-          const mintData = {
-            Image: hash,
-            Symbol: event.data[2].inputResult,
-            Title: event.data[1].inputResult,
-            URI: metadataCID,
-            maxSupply: event.data[7].inputResult,
-            merchantName: event.data[0].inputResult,
-          };
-          uploadData(mintData);
-          console.log("mintdata: ", mintData);
-        })
-        .catch((err) => console.log(err));
+    //   fetch("http://localhost:3000/uploadData", {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(metadata),
+    //   })
+    //     .then(async (res) => {
+    //       const metadataCID = await res.text();
+    //       const mintData = {
+    //         Image: hash,
+    //         Symbol: event.data[2].inputResult,
+    //         Title: event.data[1].inputResult,
+    //         URI: metadataCID,
+    //         maxSupply: event.data[7].inputResult,
+    //         merchantName: event.data[0].inputResult,
+    //         metadata: metadata
+    //       };
+    //       uploadData(mintData);
+    //       console.log("mintdata: ", mintData);
+    //     })
+    //     .catch((err) => console.log(err));
     });
 
-    // upload document to firebase
-    const uploadData = (data: {}) => {
-      // const dbInstance = collection(database, '/MerchantCollection');
-      const dbInstance = doc(
-        database,
-        "/MerchantCollection",
-        data.merchantName
-      );
-      setDoc(dbInstance, data).then(() => {
-        window.location.reload(false);
-        console.log("uploaded form data");
-      });
-    };
+
   }
 
   return (

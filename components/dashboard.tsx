@@ -7,7 +7,6 @@ import {
 } from "@metaplex-foundation/js";
 import { Connection, clusterApiUrl, PublicKey } from "@solana/web3.js";
 import { useState, useEffect } from "react";
-import { useMetaplex } from "../pages/useMetaplex";
 import { useWallet } from '@solana/wallet-adapter-react';
 import NftCard from "./nft";
 
@@ -29,9 +28,8 @@ export default function Dashboard({addresses,pending}:DashBoardProps) {
     couponKeys.push(mint);
   }
 
-  const { metaplex } = useMetaplex();
   const wallet = useWallet();
-  const [couponNFTs, setCoupons] = useState([""]);
+  const [couponNFTs, setCoupons] = useState<(Nft | Sft)[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,11 +45,11 @@ export default function Dashboard({addresses,pending}:DashBoardProps) {
   }
 
   async function getCoupons(addresses: PublicKey[]) {
-    const nfts = await metaplex!.nfts().findAllByMintList({ mints: addresses });
+    const nfts = await metaplex.nfts().findAllByMintList({ mints: addresses });
     let loadedNFTs = [];
     // looping through returned NFTs and calling .load to get the metadata
     for (let i = 0; i < nfts.length; i++) {
-      const loadedNFT = await metaplex!.nfts().load({ metadata: nfts[i] });
+      const loadedNFT = await metaplex.nfts().load({ metadata: nfts[i] });
       loadedNFTs.push(loadedNFT);
     }
     return loadedNFTs;

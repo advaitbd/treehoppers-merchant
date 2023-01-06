@@ -1,5 +1,5 @@
-import { collection, addDoc, setDoc, getDocs, doc } from "firebase/firestore";
-import { app, database } from "/pages/firebaseConfig";
+import { setDoc, doc } from "firebase/firestore";
+import { database } from "../firebaseConfig"
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Metaplex, walletAdapterIdentity } from "@metaplex-foundation/js"
 import {Connection, clusterApiUrl, PublicKey} from "@solana/web3.js";
@@ -8,7 +8,10 @@ interface nftCardProps {
     name: string;
     symbol: string;
     imageURI: string;
-    attributes: string[];
+    attributes: {
+      trait_type: string;
+      value: string;
+    }[];
     pending: boolean;
     metadata: any;
     address: string;

@@ -23,7 +23,7 @@ import { clusterApiUrl } from "@solana/web3.js";
 import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
-import { app, database } from "./firebaseConfig";
+import { app, database } from "../firebaseConfig";
 import { collection, addDoc, setDoc, getDocs, doc } from "firebase/firestore";
 import { pinata } from "./pinataConfig.js";
 import fs from "fs";

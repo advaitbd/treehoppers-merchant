@@ -5,7 +5,7 @@ import { useMemo, useState, useEffect } from "react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { clusterApiUrl } from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
-import { database } from "./firebaseConfig";
+import { database } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function Home() {

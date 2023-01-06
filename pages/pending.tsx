@@ -1,74 +1,43 @@
 import Head from "next/head";
-import { Inter } from "@next/font/google";
 import NavBar from "../components/navBar";
 import DashBoard from "../components/dashboard";
-
 import { useMemo, useState, useEffect } from "react";
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  GlowWalletAdapter,
-  PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  SolflareWalletAdapter,
-  TorusWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-import {
-  WalletModalProvider,
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
-import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
-
-import { app, database } from "./firebaseConfig"
-import { collection, addDoc, getDocs } from 'firebase/firestore';
-
+import { database } from "./firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
-  
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  const dbInstance = collection(database, '/CouponCollection');
+
+  const dbInstance = collection(database, "/CouponCollection");
   const [mintAddresses, setMintAddresses] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   function getCoupons() {
     getDocs(dbInstance).then((data) => {
-      const coupons = data.docs.map((item)=>{
-        return {...item.data(), id: item.id}
-      })
+      const coupons = data.docs.map((item) => {
+        return { ...item.data(), id: item.id };
+      });
 
-      let addresses = []
+      let addresses = [];
       for (let i = 0; i < coupons.length; i++) {
         if (coupons[i].pending == true) {
-          addresses.push(coupons[i].mintAddress)
+          addresses.push(coupons[i].mintAddress);
         }
       }
-      setMintAddresses(addresses)
-      setLoading(false)
+      setMintAddresses(addresses);
+      setLoading(false);
     });
   }
 
   useEffect(() => {
-    getCoupons()
-  },[])
+    getCoupons();
+  }, []);
 
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new GlowWalletAdapter(),
-      new SlopeWalletAdapter(),
-      new SolflareWalletAdapter({ network }),
-      new TorusWalletAdapter(),
-    ],
-    [network]
-  );
-
-  const handleChange = (event: { target: { value: any; }; }) => {
+  const handleChange = (event: { target: { value: any } }) => {
     switch (event.target.value) {
       case "devnet":
         setNetwork(WalletAdapterNetwork.Devnet);
@@ -93,23 +62,15 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>
-            <MetaplexProvider>
-              <main>
-                <NavBar onClusterChange={handleChange}/>
-                {loading ? (
+
+      <main>
+        <NavBar />
+        {loading ? (
           <p className="text-center font-light">loading...</p>
         ) : (
-          <DashBoard addresses={mintAddresses} pending ={true}/>
+          <DashBoard addresses={mintAddresses} pending={true} />
         )}
-                
-              </main>
-            </MetaplexProvider>
-          </WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
+      </main>
     </>
   );
 }

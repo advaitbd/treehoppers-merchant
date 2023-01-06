@@ -1,55 +1,23 @@
 import Head from "next/head";
 import NavBar from "../components/navBar";
-
 import {
   Flex,
   Box,
   Heading,
-  Container,
   Text,
   Button,
   Stack,
   Icon,
-  useColorModeValue,
-  createIcon,
   IconProps,
 } from "@chakra-ui/react";
-
-import { useMemo, useState, useEffect } from "react";
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
+import { useMemo, useState } from "react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  GlowWalletAdapter,
-  PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  SolflareWalletAdapter,
-  TorusWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-import {
-  WalletModalProvider,
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
-import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 export default function CallToActionWithAnnotation() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
-
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new GlowWalletAdapter(),
-      new SlopeWalletAdapter(),
-      new SolflareWalletAdapter({ network }),
-      new TorusWalletAdapter(),
-    ],
-    [network]
-  );
 
   const handleChange = (event: { target: { value: any } }) => {
     switch (event.target.value) {
@@ -75,11 +43,8 @@ export default function CallToActionWithAnnotation() {
           rel="stylesheet"
         />
       </Head>
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>
-            <MetaplexProvider>
-              <NavBar onClusterChange={handleChange} />
+
+              <NavBar/>
               {/* <Container className='dark:bg-[#121212]'> */}
               <Stack
                 as={Box}
@@ -132,11 +97,6 @@ export default function CallToActionWithAnnotation() {
                   />
                 </Flex>
               </Stack>
-            </MetaplexProvider>
-          </WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
-      {/* </Container> */}
     </>
   );
 }

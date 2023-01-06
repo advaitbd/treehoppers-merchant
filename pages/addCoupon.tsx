@@ -89,7 +89,7 @@ export default function Home() {
           headers: {
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
             Authorization: `Bearer ${process.env.JWT}`,
-            // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJjODA1MzJhMC01YmU2LTQyZTItYmRlNS1hMTkwYWZkMzNkZjkiLCJlbWFpbCI6ImFkdmFpdC5iaGFyYXQuZGVzaHBhbmRlQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfSx7ImlkIjoiTllDMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4MzNjNjBkNDAyMjUxNmM3MThjZiIsInNjb3BlZEtleVNlY3JldCI6IjA1YTZjMDhkY2QxMTJmNzgyOTQyYjZmNjZiMDI0ZGIwMjUwYzAxMjY5NjM2MjUxN2FlMmM5NmY3MmMyOGRhOTciLCJpYXQiOjE2NzI4MjA5NDR9.F-671ePIGEfYz9m3Ev-Owb6nAeY-cCH2KjFJiqKQBj8
+            
           },
         }
       );

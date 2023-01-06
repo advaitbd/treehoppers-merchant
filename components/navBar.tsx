@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import styles from "../styles/Home.module.css";
 
 import dynamic from "next/dynamic";
 
@@ -12,7 +10,7 @@ const WalletMultiButtonDynamic = dynamic(
   { ssr: false }
 );
 
-export default function NavBar({ onClusterChange }) {
+export default function NavBar() {
   const router = useRouter();
 
   const { theme, setTheme } = useTheme();
@@ -20,7 +18,7 @@ export default function NavBar({ onClusterChange }) {
   return (
     <>
       <nav className="bg-white py-6 flex flex-wrap items-center justify-center dark:bg-[#121212]">
-      <a
+      <Link
           className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
             router.pathname === "/landingPage"
               ? "text-gray-800 font-bold dark:text-white"
@@ -29,8 +27,8 @@ export default function NavBar({ onClusterChange }) {
           href="/landingPage"
         >
           Home
-        </a>        
-      <a
+        </Link>        
+      <Link
           className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
             router.pathname === "/addCoupon"
               ? "text-gray-800 font-bold dark:text-white"
@@ -39,8 +37,8 @@ export default function NavBar({ onClusterChange }) {
           href="/addCoupon"
         >
           Add Coupon
-        </a>
-        <a
+        </Link>
+        <Link
           className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
             router.pathname === "/"
               ? "text-gray-800 font-bold dark:text-white"
@@ -49,9 +47,9 @@ export default function NavBar({ onClusterChange }) {
           href="/"
         >
           Dashboard
-        </a>
+        </Link>
 
-        <a
+        <Link
           className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
             router.pathname === "/pending"
               ? "text-gray-800 font-bold dark:text-white"
@@ -60,16 +58,11 @@ export default function NavBar({ onClusterChange }) {
           href="/pending"
         >
           Pending Claims
-        </a>
+        </Link>
 
         <WalletMultiButtonDynamic />
         
         <div className="m-1">
-        <select onChange={onClusterChange} className={styles.dropdown}>
-          <option value="devnet">Devnet</option>
-          <option value="mainnet">Mainnet</option>
-          <option value="testnet">Testnet</option>
-        </select> 
         </div>
 
 

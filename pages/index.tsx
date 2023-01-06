@@ -2,31 +2,14 @@ import Head from "next/head";
 import NavBar from "../components/navBar";
 import DashBoard from "../components/dashboard";
 import { useMemo, useState, useEffect } from "react";
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  GlowWalletAdapter,
-  PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  SolflareWalletAdapter,
-  TorusWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-import {
-  WalletModalProvider,
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
-import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
-import { app, database } from "./firebaseConfig";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { database } from "./firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function Home() {
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
-
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
   const dbInstance = collection(database, "/CouponCollection");
@@ -53,17 +36,6 @@ export default function Home() {
     getCoupons();
   }, []);
 
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new GlowWalletAdapter(),
-      new SlopeWalletAdapter(),
-      new SolflareWalletAdapter({ network }),
-      new TorusWalletAdapter(),
-    ],
-    [network]
-  );
-
   const handleChange = (event: { target: { value: any } }) => {
     switch (event.target.value) {
       case "devnet":
@@ -89,23 +61,14 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>
-            <MetaplexProvider>
-              <NavBar onClusterChange={handleChange} />
-              
-                {loading ? (
-                  <p className="text-center font-light">loading...</p>
-                ) : (
-                  <DashBoard addresses={mintAddresses} pending={false} />
-                )}
-              
-              
-            </MetaplexProvider>
-          </WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
+
+      <NavBar />
+
+      {loading ? (
+        <p className="text-center font-light">loading...</p>
+      ) : (
+        <DashBoard addresses={mintAddresses} pending={false} />
+      )}
     </>
   );
 }

@@ -15,7 +15,7 @@ interface nftCardProps {
 }
 
 
-export default function nftCard({ name, symbol, imageURI,attributes,pending, metadata,address}: nftCardProps): JSX.Element {
+export default function NftCard({ name, symbol, imageURI,attributes,pending, metadata,address}: nftCardProps): JSX.Element {
   let attributeElements = [];
   const wallet = useWallet();
   for (let i = 0; i < attributes.length; i++) {

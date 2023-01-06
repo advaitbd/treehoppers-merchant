@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import NavBar from "../components/navBar";
 import {
   Flex,
@@ -84,7 +85,7 @@ export default function CallToActionWithAnnotation() {
                       bg: "green.500",
                     }}
                   >
-                    <a href="/addCoupon">Add Coupons</a>
+                    <Link href="/addCoupon">Add Coupons</Link>
                   </Button>
                   <Button variant={"link"} colorScheme={"blue"} size={"sm"}>
                     Learn more

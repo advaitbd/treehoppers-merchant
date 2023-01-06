@@ -61,9 +61,6 @@ export default function NavBar() {
         </Link>
 
         <WalletMultiButtonDynamic />
-        
-        <div className="m-1">
-        </div>
 
 
         <div className="px-4 py-2">

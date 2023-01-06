@@ -1,67 +1,13 @@
 import Head from "next/head";
 import NavBar from "../components/navBar";
 import { Form } from "@web3uikit/core";
-import { useMemo, useState, useEffect } from "react";
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  GlowWalletAdapter,
-  PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  SolflareWalletAdapter,
-  TorusWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-import {
-  WalletModalProvider,
-} from "@solana/wallet-adapter-react-ui";
-import { clusterApiUrl } from "@solana/web3.js";
-import { MetaplexProvider } from "../components/MetaplexProvider";
-import "@solana/wallet-adapter-react-ui/styles.css";
-
 import { database } from "../firebaseConfig";
-import { setDoc,doc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import axios from "axios";
-
-import { useWallet } from '@solana/wallet-adapter-react';
-
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export default function Home() {
-  const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const { publicKey, wallet, disconnect } = useWallet();
-  // const dbInstance = collection(database, '/MerchantCollection');
-
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new GlowWalletAdapter(),
-      new SlopeWalletAdapter(),
-      new SolflareWalletAdapter({ network }),
-      new TorusWalletAdapter(),
-    ],
-    [network]
-  );
-
-  const handleChange = (event: { target: { value: any } }) => {
-    switch (event.target.value) {
-      case "devnet":
-        setNetwork(WalletAdapterNetwork.Devnet);
-        break;
-      case "mainnet":
-        setNetwork(WalletAdapterNetwork.Mainnet);
-        break;
-      case "testnet":
-        setNetwork(WalletAdapterNetwork.Testnet);
-        break;
-      default:
-        setNetwork(WalletAdapterNetwork.Devnet);
-        break;
-    }
-  };
-
   const pinataUpload = async (image: any) => {
     const formData: {
       append: (arg0: string, arg1: any) => void;
@@ -78,7 +24,7 @@ export default function Home() {
       cidVersion: 0,
     });
     formData.append("pinataOptions", options);
-    
+
     try {
       const res = await axios.post(
         "https://api.pinata.cloud/pinning/pinFileToIPFS",
@@ -88,7 +34,6 @@ export default function Home() {
           headers: {
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
             Authorization: `Bearer ${process.env.JWT}`,
-            
           },
         }
       );
@@ -100,15 +45,9 @@ export default function Home() {
   };
 
   // upload document to firebase
-  const uploadData = (data: {
-    merchantName: any;
-  }) => {
+  const uploadData = (data: { merchantName: any }) => {
     // const dbInstance = collection(database, '/MerchantCollection');
-    const dbInstance = doc(
-      database,
-      "/MerchantCollection",
-      data.merchantName
-    );
+    const dbInstance = doc(database, "/MerchantCollection", data.merchantName);
     setDoc(dbInstance, data).then(() => {
       window.location.reload();
       console.log("uploaded form data");
@@ -117,7 +56,7 @@ export default function Home() {
 
   async function formHandler(event: any) {
     // Get data from the form.
-    console.log(event)
+    console.log(event);
     const image = event.data[8].inputResult;
 
     // Upload image to /uploadFile endpoint using Pinata
@@ -146,7 +85,7 @@ export default function Home() {
       };
 
       // upload mintData to firebase
-      
+
       const mintData = {
         Image: hash,
         Symbol: event.data[2].inputResult,
@@ -156,37 +95,35 @@ export default function Home() {
         metadata: metadata,
         merchantAddress: publicKey?.toString(),
       };
-      
+
       uploadData(mintData);
-      console.log("mintdata: ", mintData);      
+      console.log("mintdata: ", mintData);
 
       //upload metadata to ipfs
-    //   fetch("http://localhost:3000/uploadData", {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(metadata),
-    //   })
-    //     .then(async (res) => {
-    //       const metadataCID = await res.text();
-    //       const mintData = {
-    //         Image: hash,
-    //         Symbol: event.data[2].inputResult,
-    //         Title: event.data[1].inputResult,
-    //         URI: metadataCID,
-    //         maxSupply: event.data[7].inputResult,
-    //         merchantName: event.data[0].inputResult,
-    //         metadata: metadata
-    //       };
-    //       uploadData(mintData);
-    //       console.log("mintdata: ", mintData);
-    //     })
-    //     .catch((err) => console.log(err));
+      //   fetch("http://localhost:3000/uploadData", {
+      //     method: "POST",
+      //     headers: {
+      //       Accept: "application/json",
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(metadata),
+      //   })
+      //     .then(async (res) => {
+      //       const metadataCID = await res.text();
+      //       const mintData = {
+      //         Image: hash,
+      //         Symbol: event.data[2].inputResult,
+      //         Title: event.data[1].inputResult,
+      //         URI: metadataCID,
+      //         maxSupply: event.data[7].inputResult,
+      //         merchantName: event.data[0].inputResult,
+      //         metadata: metadata
+      //       };
+      //       uploadData(mintData);
+      //       console.log("mintdata: ", mintData);
+      //     })
+      //     .catch((err) => console.log(err));
     });
-
-
   }
 
   return (
@@ -197,78 +134,74 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>
-            <MetaplexProvider>
-              <main>
-                <NavBar/>
 
-                <div className="flex justify-center h-screen">
-                  <Form
-                    buttonConfig={{
-                      theme: "primary",
-                    }}
-                    data={[
-                      {
-                        inputWidth: "100%",
-                        name: "Merchant Name",
-                        type: "text",
-                        value: "",
-                      },
-                      {
-                        inputWidth: "100%",
-                        name: "Coupon Title",
-                        type: "text",
-                        value: "",
-                      },
-                      {
-                        inputWidth: "100%",
-                        name: "Symbol",
-                        type: "text",
-                        value: "",
-                      },
-                      {
-                        inputWidth: "100%",
-                        name: "Description",
-                        type: "text",
-                        value: "",
-                      },
-                      {
-                        inputWidth: "100%",
-                        name: "Membership Level",
-                        type: "text",
-                        value: "",
-                      },
-                      {
-                        name: "Redemption Points",
-                        type: "number",
-                        value: "",
-                      },
-                      {
-                        name: "Date of Expiry",
-                        type: "date",
-                        value: "",
-                      },
-                      {
-                        name: "Supply",
-                        type: "number",
-                        value: "",
-                      },
-                      {
-                        inputWidth: "100%",
-                        name: "Image",
-                        type: "file",
-                        value: "",
-                      },
-                    ]}
-                    onSubmit={formHandler} title={""} id={""}                  />
-                </div>
-              </main>
-            </MetaplexProvider>
-          </WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
+      <main>
+        <NavBar />
+
+        <div className="flex justify-center h-screen">
+          <Form
+            buttonConfig={{
+              theme: "primary",
+            }}
+            data={[
+              {
+                inputWidth: "100%",
+                name: "Merchant Name",
+                type: "text",
+                value: "",
+              },
+              {
+                inputWidth: "100%",
+                name: "Coupon Title",
+                type: "text",
+                value: "",
+              },
+              {
+                inputWidth: "100%",
+                name: "Symbol",
+                type: "text",
+                value: "",
+              },
+              {
+                inputWidth: "100%",
+                name: "Description",
+                type: "text",
+                value: "",
+              },
+              {
+                inputWidth: "100%",
+                name: "Membership Level",
+                type: "text",
+                value: "",
+              },
+              {
+                name: "Redemption Points",
+                type: "number",
+                value: "",
+              },
+              {
+                name: "Date of Expiry",
+                type: "date",
+                value: "",
+              },
+              {
+                name: "Supply",
+                type: "number",
+                value: "",
+              },
+              {
+                inputWidth: "100%",
+                name: "Image",
+                type: "file",
+                value: "",
+              },
+            ]}
+            onSubmit={formHandler}
+            title={""}
+            id={""}
+          />
+        </div>
+      </main>
     </>
   );
 }

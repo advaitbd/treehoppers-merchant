@@ -18,9 +18,12 @@ export default function Home() {
 
   function getCoupons() {
     getDocs(dbInstance).then((data) => {
-      const coupons = data.docs.map((item) => {
+      const coupons: {
+        id: string;
+        mintAddress: string;
+      }[] = data.docs.map((item) => {
         return { ...item.data(), id: item.id };
-      });
+      }) as any;
 
       let addresses = [];
       for (let i = 0; i < coupons.length; i++) {

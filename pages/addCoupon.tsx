@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { Inter } from "@next/font/google";
 import NavBar from "../components/navBar";
 import { Form } from "@web3uikit/core";
 import { useMemo, useState, useEffect } from "react";
@@ -17,16 +16,13 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import {
   WalletModalProvider,
-  WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
 import { MetaplexProvider } from "./MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
-import { app, database } from "../firebaseConfig";
-import { collection, addDoc, setDoc, getDocs, doc } from "firebase/firestore";
-import { pinata } from "./pinataConfig.js";
-import fs from "fs";
+import { database } from "../firebaseConfig";
+import { setDoc,doc } from "firebase/firestore";
 import axios from "axios";
 
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -67,7 +63,10 @@ export default function Home() {
   };
 
   const pinataUpload = async (image: any) => {
-    const formData = new FormData();
+    const formData: {
+      append: (arg0: string, arg1: any) => void;
+      _boundary: any;
+    } = new FormData() as any;
     formData.append("file", image);
 
     const metadata = JSON.stringify({
@@ -79,13 +78,13 @@ export default function Home() {
       cidVersion: 0,
     });
     formData.append("pinataOptions", options);
-
+    
     try {
       const res = await axios.post(
         "https://api.pinata.cloud/pinning/pinFileToIPFS",
         formData,
         {
-          maxBodyLength: "Infinity",
+          maxBodyLength: Infinity,
           headers: {
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
             Authorization: `Bearer ${process.env.JWT}`,
@@ -101,7 +100,9 @@ export default function Home() {
   };
 
   // upload document to firebase
-  const uploadData = (data: {}) => {
+  const uploadData = (data: {
+    merchantName: any;
+  }) => {
     // const dbInstance = collection(database, '/MerchantCollection');
     const dbInstance = doc(
       database,
@@ -109,7 +110,7 @@ export default function Home() {
       data.merchantName
     );
     setDoc(dbInstance, data).then(() => {
-      window.location.reload(false);
+      window.location.reload();
       console.log("uploaded form data");
     });
   };
@@ -201,7 +202,7 @@ export default function Home() {
           <WalletModalProvider>
             <MetaplexProvider>
               <main>
-                <NavBar onClusterChange={handleChange} />
+                <NavBar/>
 
                 <div className="flex justify-center h-screen">
                   <Form
@@ -261,8 +262,7 @@ export default function Home() {
                         value: "",
                       },
                     ]}
-                    onSubmit={formHandler}
-                  />
+                    onSubmit={formHandler} title={""} id={""}                  />
                 </div>
               </main>
             </MetaplexProvider>

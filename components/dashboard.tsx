@@ -1,4 +1,6 @@
 import {
+  JsonMetadata,
+  Metadata,
   Metaplex,
   Nft,
   NftWithToken,
@@ -9,6 +11,7 @@ import { Connection, clusterApiUrl, PublicKey } from "@solana/web3.js";
 import { useState, useEffect } from "react";
 import { useWallet } from '@solana/wallet-adapter-react';
 import NftCard from "./nft";
+import { LoadMetadataInput } from "@metaplex-foundation/js";
 
 const connection = new Connection(clusterApiUrl("devnet"));
 const metaplex = new Metaplex(connection);
@@ -49,7 +52,7 @@ export default function Dashboard({addresses,pending}:DashBoardProps) {
     let loadedNFTs = [];
     // looping through returned NFTs and calling .load to get the metadata
     for (let i = 0; i < nfts.length; i++) {
-      const loadedNFT = await metaplex.nfts().load({ metadata: nfts[i] });
+      const loadedNFT = await metaplex.nfts().load({ metadata: nfts[i] as Metadata<JsonMetadata<string>>});
       loadedNFTs.push(loadedNFT);
     }
     return loadedNFTs;

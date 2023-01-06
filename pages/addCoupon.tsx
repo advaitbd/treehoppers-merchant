@@ -18,7 +18,7 @@ import {
   WalletModalProvider,
 } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
-import { MetaplexProvider } from "./MetaplexProvider";
+import { MetaplexProvider } from "../components/MetaplexProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 import { database } from "../firebaseConfig";

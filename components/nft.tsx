@@ -3,6 +3,7 @@ import { database } from "../firebaseConfig"
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Metaplex, walletAdapterIdentity } from "@metaplex-foundation/js"
 import {Connection, clusterApiUrl, PublicKey} from "@solana/web3.js";
+import { useState } from "react";
 
 interface nftCardProps {
     name: string;
@@ -19,6 +20,7 @@ interface nftCardProps {
 
 
 export default function NftCard({ name, symbol, imageURI,attributes,pending, metadata,address}: nftCardProps): JSX.Element {
+  const [clicked, setClicked] = useState(false);
   let attributeElements = [];
   const wallet = useWallet();
   for (let i = 0; i < attributes.length; i++) {
@@ -44,6 +46,7 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
     metadata.attributes[4].value = "true"
     console.log(metadata)
     console.log(address)    
+    setClicked(true);
     
     const data = {
       mintAddress: address,
@@ -53,8 +56,10 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
     const dbInstance = doc(database, '/CouponCollection',address);
     setDoc(dbInstance, data, {merge:true}).then(() => {        
       console.log("coupon used");
-      // window.location.reload(false)
+      setClicked(false);
+      window.location.reload()
     });
+
     // Calls the Redeem endpoint
     // fetch('http://localhost:3000/redeem', {
     //   method: 'POST',
@@ -68,15 +73,15 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
     //   .then(response => console.log(response))
     //   .catch(error => console.error(error));
 
-    const newMetadata = "https://ipfs.io/ipfs/QmVUmswAquyRLkUyxXjqSVQeBiYVdmjwwvzjJTLUpmRZ5c"
+    // const newMetadata = "https://ipfs.io/ipfs/QmVUmswAquyRLkUyxXjqSVQeBiYVdmjwwvzjJTLUpmRZ5c"
     
-    const connection = new Connection(clusterApiUrl('devnet'))
-    const metaplex = new Metaplex(connection)
-    metaplex.use(walletAdapterIdentity(wallet));
-    const mint = new PublicKey(address);
+    // const connection = new Connection(clusterApiUrl('devnet'))
+    // const metaplex = new Metaplex(connection)
+    // metaplex.use(walletAdapterIdentity(wallet));
+    // const mint = new PublicKey(address);
 
-    const nft = await metaplex.nfts().findByMint({ mintAddress: mint })
-    const { response } = await metaplex.nfts().update({ nftOrSft: nft, uri: newMetadata }, {commitment: 'processed'})
+    // const nft = await metaplex.nfts().findByMint({ mintAddress: mint })
+    // const { response } = await metaplex.nfts().update({ nftOrSft: nft, uri: newMetadata }, {commitment: 'processed'})
   };
   const handleRejectClick = () => {
     // If Merchant rejects the use of NFT, set pending to false only
@@ -85,8 +90,10 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
     // set pending to false in firebase
 
   };
+
+  const cardStyle = "w-64 flex flex-col p-2 my-2 mx-2 bg-gray-200 text-center justify-center rounded-md border-4 border-slate-400 dark:bg-gray-900"
   return (
-    <div className="w-64 flex flex-col p-2 my-2 mx-2 bg-gray-200 text-center justify-center rounded-md border-4 border-slate-400 dark:bg-gray-900">
+    <div className={clicked ? "animate-pulse " + cardStyle : cardStyle}>
       <div className="h-full">
         <h1 className="font-bold text-2xl text-gray-700 dark:text-white">
           {name}

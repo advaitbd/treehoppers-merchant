@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import { useWallet } from '@solana/wallet-adapter-react';
 import NftCard from "./nft";
 import { LoadMetadataInput } from "@metaplex-foundation/js";
+import { Skeleton } from "@web3uikit/core";
 
 const connection = new Connection(clusterApiUrl("devnet"));
 const metaplex = new Metaplex(connection);
@@ -83,6 +84,25 @@ export default function Dashboard({addresses,pending}:DashBoardProps) {
     return <div className="flex flex-wrap justify-center">{body}</div>;
   };
 
+  let loadingCouponElements: any[] = [];
+  for (let i = 0; i < addresses.length; i++) {
+    loadingCouponElements.push(
+      <div className="m-2">
+      <Skeleton
+        animationColor="#c2c2c2"
+        backgroundColor="rgba(210, 215, 220, 1)"
+        height="450px"
+        theme="image"
+        width="256px"
+      />
+      </div>
+
+    );
+  }
+  const loadingCouponSection = (body: any) => {
+    return <div className="flex flex-wrap justify-center">{body}</div>;
+  };
+
 
 
   return (
@@ -92,7 +112,7 @@ export default function Dashboard({addresses,pending}:DashBoardProps) {
           Currently Minted Coupons
         </h1> */}
         {loading ? (
-          <p className="text-center font-light">loading...</p>
+          loadingCouponSection(loadingCouponElements)
         ) : (
           couponSection(unpackCoupons(couponNFTs,pending))
           

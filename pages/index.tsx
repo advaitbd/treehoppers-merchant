@@ -2,16 +2,12 @@ import Head from "next/head";
 import NavBar from "../components/navBar";
 import DashBoard from "../components/dashboard";
 import { useMemo, useState, useEffect } from "react";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { clusterApiUrl } from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { database } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import { Loading } from "@web3uikit/core";
 
 export default function Home() {
-  const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-
   const dbInstance = collection(database, "/CouponCollection");
   const [mintAddresses, setMintAddresses] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,23 +35,6 @@ export default function Home() {
     getCoupons();
   }, []);
 
-  const handleChange = (event: { target: { value: any } }) => {
-    switch (event.target.value) {
-      case "devnet":
-        setNetwork(WalletAdapterNetwork.Devnet);
-        break;
-      case "mainnet":
-        setNetwork(WalletAdapterNetwork.Mainnet);
-        break;
-      case "testnet":
-        setNetwork(WalletAdapterNetwork.Testnet);
-        break;
-      default:
-        setNetwork(WalletAdapterNetwork.Devnet);
-        break;
-    }
-  };
-
   return (
     <>
       <Head>
@@ -68,7 +47,20 @@ export default function Home() {
       <NavBar />
 
       {loading ? (
-        <p className="text-center font-light">loading...</p>
+        <div
+          className="flex justify-center mx-80"
+          style={{
+            backgroundColor: "#E5E7EB",
+            borderRadius: "8px",
+            padding: "20px",
+          }}
+        >
+          <Loading
+            fontSize={16}
+            spinnerColor="#000000"
+            text="Loading your minted coupons"
+          />
+        </div>
       ) : (
         <DashBoard addresses={mintAddresses} pending={false} />
       )}

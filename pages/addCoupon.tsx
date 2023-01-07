@@ -69,7 +69,7 @@ export default function Home() {
         attributes: [
           { trait_type: "Membership", value: event.data[4].inputResult },
           { trait_type: "Redemption points", value: event.data[5].inputResult },
-          { trait_type: "Valid till", value: event.data[6].inputResult },
+          { trait_type: "Valid till", value: event.data[6].inputResult[0].slice(4,15) },
           { trait_type: "expired", value: "false" },
         ],
         properties: {

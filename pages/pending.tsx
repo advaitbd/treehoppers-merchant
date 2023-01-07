@@ -6,14 +6,17 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 import { database } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { Loading } from "@web3uikit/core";
+import axios from "axios";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export default function Home() {
-  const dbInstance = collection(database, "/CouponCollection");
+  const { publicKey } = useWallet();
   const [mintAddresses, setMintAddresses] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  function getCoupons() {
-    getDocs(dbInstance).then((data) => {
+  const dbInstance = collection(database, "/CouponCollection");
+  
+  async function getPendingCoupons(): Promise<string[]>{
+    return getDocs(dbInstance).then((data) => {
       const coupons: {
         id: string;
         mintAddress: string;
@@ -28,14 +31,24 @@ export default function Home() {
           addresses.push(coupons[i].mintAddress);
         }
       }
-      setMintAddresses(addresses);
-      setLoading(false);
+      return addresses;
     });
   }
 
   useEffect(() => {
-    getCoupons();
-  }, []);
+    if (publicKey) {
+      getPendingCoupons().then((pendingAddresses) => {
+        axios.post("http://localhost:3000/retrieveMerchantsCoupons",{publicKey: publicKey?.toString()}).then((res) => {
+          console.log(res.data.preloadedAddresses)
+          const overlappingAddresses = res.data.preloadedAddresses.filter((address: any) => pendingAddresses.includes(address))
+          setMintAddresses(overlappingAddresses)
+          setLoading(false);
+        })
+      })
+
+    }
+
+  }, [publicKey]);
 
   return (
     <>
@@ -52,20 +65,23 @@ export default function Home() {
           <div
             className="flex justify-center mx-80"
             style={{
-              backgroundColor: "#E5E7EB",
+              backgroundColor: "#efefef",
               borderRadius: "8px",
               padding: "20px",
             }}
           >
             <Loading
-              fontSize={16}
+              fontSize={12}
               spinnerColor="#000000"
               text="Loading your pending coupons"
             />
           </div>
         ) : (
+          <div className="flex flex-wrap justify-center">
           <DashBoard addresses={mintAddresses} pending={true} />
+                  </div>
         )}
+        {/* {mintAddresses.length == 0 && !loading && !refreshing ? <h1 className="text-center font-bold text-3xl">No Pending Coupons</h1> : null} */}
       </main>
     </>
   );

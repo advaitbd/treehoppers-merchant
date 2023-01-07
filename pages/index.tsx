@@ -4,36 +4,62 @@ import DashBoard from "../components/dashboard";
 import { useMemo, useState, useEffect } from "react";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { database } from "../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { Loading } from "@web3uikit/core";
+import { useWallet } from "@solana/wallet-adapter-react";
+import axios from "axios";
 
 export default function Home() {
-  const dbInstance = collection(database, "/CouponCollection");
+  const { publicKey } = useWallet();
   const [mintAddresses, setMintAddresses] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  function getCoupons() {
-    getDocs(dbInstance).then((data) => {
-      const coupons: {
-        id: string;
-        mintAddress: string;
-      }[] = data.docs.map((item) => {
-        return { ...item.data(), id: item.id };
-      }) as any;
-
-      let addresses = [];
-      for (let i = 0; i < coupons.length; i++) {
-        addresses.push(coupons[i].mintAddress);
-      }
-      setMintAddresses(addresses);
-      console.log("state", mintAddresses);
-      setLoading(false);
-    });
-  }
+  
 
   useEffect(() => {
-    getCoupons();
-  }, []);
+    if (publicKey) {
+      axios.post("http://localhost:3000/retrieveMerchantsCoupons",{publicKey: publicKey?.toString()}).then((res) => {
+        console.log(res.data.preloadedAddresses)
+        setMintAddresses(res.data.preloadedAddresses)
+        setLoading(false);
+      })
+    }
+
+  }, [publicKey]);
+
+  // async function preloadCreatorNFTs() {
+  //   const docInstance = doc(database, "MerchantCouponsCollection", publicKey)
+  //   const docRef = await getDoc(docInstance);
+  //   if (docRef.exists()) {
+  //   console.log("Document data:", docRef.data().preLoadedAddresses);
+  //   setMintAddresses(docRef.data().preLoadedAddresses);      
+  //   }
+  // }
+
+  // make an api call to /retrieveMerchantsCoupons using axios
+  // get the response and set the state
+
+  // function getCoupons() {
+  //   const dbInstance = collection(database, "/MerchantCouponsCollection");
+  //   getDocs(dbInstance).then((data) => {
+  //     const coupons: {
+  //       id: string;
+  //       mintAddress: string;
+  //     }[] = data.docs.map((item) => {
+  //       return { ...item.data(), id: item.id };
+  //     }) as any;
+
+  //     let addresses = [];
+  //     for (let i = 0; i < coupons.length; i++) {
+  //       addresses.push(coupons[i].mintAddress);
+  //     }
+  //     setMintAddresses(addresses);
+  //     console.log("state", mintAddresses);
+  //     setLoading(false);
+  //   });
+  // }
+
+
+
 
   return (
     <>
@@ -45,25 +71,30 @@ export default function Home() {
       </Head>
 
       <NavBar />
-
-      {loading ? (
+      
+{loading ? (
         <div
           className="flex justify-center mx-80"
           style={{
-            backgroundColor: "#E5E7EB",
+            backgroundColor: "#efefef",
             borderRadius: "8px",
             padding: "20px",
           }}
         >
           <Loading
-            fontSize={16}
+            fontSize={12}
             spinnerColor="#000000"
             text="Loading your minted coupons"
           />
         </div>
       ) : (
-        <DashBoard addresses={mintAddresses} pending={false} />
+        <div className="flex flex-wrap justify-center">
+<DashBoard addresses={mintAddresses} pending={false} />
+        </div>
+        
       )}
+      
+      
     </>
   );
 }

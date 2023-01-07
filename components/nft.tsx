@@ -23,13 +23,17 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
   const [clicked, setClicked] = useState(false);
   let attributeElements = [];
   const wallet = useWallet();
+  
   for (let i = 0; i < attributes.length; i++) {
     attributeElements.push(
       <p className="m-2 " key={i}>
-        <a className="bg-gray-400 rounded-md p-1 font-bold">
+        <a className="font-light">
           {attributes[i].trait_type}:
         </a>{" "}
+        <a className="bg-[#bed3d8] rounded-md p-1 font-bold border-2 border-dotted border-slate-400">
         {attributes[i].value}{" "}
+        </a>
+        
       </p>
     );
   }
@@ -43,7 +47,7 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
   const handleApproveClick = async () => {
     // If Merchant approves the use of NFT, set pending to false and expired to true
     console.log("Approved!");
-    metadata.attributes[4].value = "true"
+    metadata[3].value = "true"
     console.log(metadata)
     console.log(address)    
     setClicked(true);
@@ -57,7 +61,7 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
     setDoc(dbInstance, data, {merge:true}).then(() => {        
       console.log("coupon used");
       setClicked(false);
-      window.location.reload()
+      // window.location.reload()
     });
     // Get user id from NFT metadata
     const userID = metadata.attributes[3].value
@@ -94,7 +98,7 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
 
   };
 
-  const cardStyle = "w-64 flex flex-col p-2 my-2 mx-2 bg-gray-200 text-center justify-center rounded-md border-4 border-slate-400 dark:bg-gray-900"
+  const cardStyle = "w-64 flex flex-col p-2 my-2 mx-2 bg-gray-200 text-center justify-center rounded-md border-2 border-slate-400 dark:bg-gray-900"
   return (
     <div className={clicked ? "animate-pulse " + cardStyle : cardStyle}>
       <div className="h-full">

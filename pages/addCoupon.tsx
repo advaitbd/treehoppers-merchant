@@ -70,7 +70,6 @@ export default function Home() {
           { trait_type: "Membership", value: event.data[4].inputResult },
           { trait_type: "Redemption points", value: event.data[5].inputResult },
           { trait_type: "Valid till", value: event.data[6].inputResult },
-          { trait_type: "owner", value: "@jackDorsey101" },
           { trait_type: "expired", value: "false" },
         ],
         properties: {

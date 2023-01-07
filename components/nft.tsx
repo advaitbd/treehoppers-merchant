@@ -1,8 +1,8 @@
-import { setDoc, doc } from "firebase/firestore";
+import { collection, query, where, setDoc, getDocs, doc } from "firebase/firestore";
 import { database } from "../firebaseConfig"
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Metaplex, walletAdapterIdentity } from "@metaplex-foundation/js"
-import {Connection, clusterApiUrl, PublicKey} from "@solana/web3.js";
+import { Metaplex, walletAdapterIdentity, keypairIdentity } from "@metaplex-foundation/js"
+import {Connection, clusterApiUrl, PublicKey, Keypair} from "@solana/web3.js";
 import { useState } from "react";
 
 interface nftCardProps {
@@ -59,29 +59,32 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
       setClicked(false);
       window.location.reload()
     });
-
-    // Calls the Redeem endpoint
-    // fetch('http://localhost:3000/redeem', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     key: 'value'
-    //   }),
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    //   .then(response => console.log(response))
-    //   .catch(error => console.error(error));
-
-    // const newMetadata = "https://ipfs.io/ipfs/QmVUmswAquyRLkUyxXjqSVQeBiYVdmjwwvzjJTLUpmRZ5c"
+    // Get user id from NFT metadata
+    const userID = metadata.attributes[3].value
+    console.log(userID)
+    // Query the collection using userID
+    const q = query(collection(database,"UserCollection"), where("username","==",userID))
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (doc) => {
+    console.log(doc.id, " => ", doc.data()["privateKey"]);
+    // some error here
+    const privateKeyArray =  new Uint8Array(doc.data()["privateKey"])
+    // Get key pair from query results
+    const userKeyPair = Keypair.fromSecretKey(privateKeyArray)
+    // New metadata
+    const newMetadata = "https://ipfs.io/ipfs/QmVUmswAquyRLkUyxXjqSVQeBiYVdmjwwvzjJTLUpmRZ5c"
+    // Connect to Devnet
+    const connection = new Connection(clusterApiUrl('devnet'))
+    const metaplex = new Metaplex(connection)
+    metaplex.use(keypairIdentity(userKeyPair))
+    const mint = new PublicKey(address);
+    const nft = await metaplex.nfts().findByMint({ mintAddress: mint })
+    const { response } = await metaplex.nfts().update({ nftOrSft: nft, uri: newMetadata }, {commitment: 'processed'})
+    });
     
-    // const connection = new Connection(clusterApiUrl('devnet'))
-    // const metaplex = new Metaplex(connection)
-    // metaplex.use(walletAdapterIdentity(wallet));
-    // const mint = new PublicKey(address);
+    
 
-    // const nft = await metaplex.nfts().findByMint({ mintAddress: mint })
-    // const { response } = await metaplex.nfts().update({ nftOrSft: nft, uri: newMetadata }, {commitment: 'processed'})
+    
   };
   const handleRejectClick = () => {
     // If Merchant rejects the use of NFT, set pending to false only

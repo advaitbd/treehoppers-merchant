@@ -127,41 +127,49 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
     return loadedNFTs;
   }
 
-
-
+  const doNotRender = ["BqS14k3UK4vMPor2FTwL1kJEkqS4nmUwZxE66dt4DneD",
+    "6nBrcdUaUAqTPiYxRg2J29oDStYr262tPDUUMaXT2ZgY",
+    "3ptMLUkFgYwfRu3hHXeVHrsKDS38mKv4LJ4nhYdMhx7n",
+    "6HUiBycq9MtPxpa9TAKBRRuyD4yhHEmZKuA5QGpDXC2r",
+    "6JoAfvFsw8SqLbEoJbvoMdVbmcQQDJyep89ZqJegSCMm",
+    "F6VEzX7k9Z8DzUCi5BDErUJZaoeUAgPp51jUcpU2Rz7a"]
   // unpacking the NFT properties into the NFT card component
   function unpackCoupons(coupons: any, pending: boolean) {
     let couponElements = [];
     for (let i = 0; i < coupons.length; i++) {
-      if (pending == true) {
-        if (addresses.includes(coupons[i].address.toString())) {
+      if (!doNotRender.includes(coupons[i].address.toString())) {
+        if (pending == true) {
+          if (addresses.includes(coupons[i].address.toString())) {
+            couponElements.push(
+              <NftCard
+                key={i}
+                address={coupons[i].address.toString()}
+                name={coupons[i].name}
+                symbol={coupons[i].symbol}
+                imageURI={coupons[i].json && coupons[i].json.image ? coupons[i].json.image : coupons[i].uri}
+                attributes={coupons[i].json.attributes ? coupons[i].json.attributes : coupons[i].json}
+                pending={pending}
+                metadata={coupons[i].json}
+              />
+            );
+          }
+        } else {
           couponElements.push(
             <NftCard
               key={i}
               address={coupons[i].address.toString()}
               name={coupons[i].name}
               symbol={coupons[i].symbol}
-              imageURI={coupons[i].uri}
+              imageURI={coupons[i].json && coupons[i].json.image ? coupons[i].json.image : coupons[i].uri}
               attributes={coupons[i].json.attributes ? coupons[i].json.attributes : coupons[i].json}
               pending={pending}
               metadata={coupons[i].json}
             />
           );
         }
-      } else {
-        couponElements.push(
-          <NftCard
-            key={i}
-            address={coupons[i].address.toString()}
-            name={coupons[i].name}
-            symbol={coupons[i].symbol}
-            imageURI={coupons[i].uri}
-            attributes={coupons[i].json.attributes ? coupons[i].json.attributes : coupons[i].json}
-            pending={pending}
-            metadata={coupons[i].json}
-          />
-        );
       }
+        
+
     }
     return couponElements;
   }

@@ -97,7 +97,7 @@ export default function NftCard({
 
         // New metadata
         const newMetadata =
-          "https://ipfs.io/ipfs/QmVUmswAquyRLkUyxXjqSVQeBiYVdmjwwvzjJTLUpmRZ5c";
+          "https://ipfs.io/ipfs/QmcA9yuiU9x4bQWVvSwpzwh4RjnmbXqFmvJdgfbSpy4QZt";
 
         // Connect to Devnet
         const connection = new Connection(clusterApiUrl("devnet"));
@@ -129,7 +129,18 @@ export default function NftCard({
   };
   const handleRejectClick = () => {
     // If Merchant rejects the use of NFT, set pending to false only
+    setClicked(true);
     console.log("Rejected!");
+    const data = {
+      mintAddress: address,
+      pending: false,
+    };
+    const dbInstance = doc(database, "/CouponCollection", address);    
+    setDoc(dbInstance, data, { merge: true }).then(() => {
+      console.log("coupon used");
+      setClicked(false);
+      window.location.reload()
+    });    
 
     // delete from couponcollection in firebase
   };

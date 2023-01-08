@@ -64,7 +64,7 @@ export default function NftCard({ name, symbol, imageURI,attributes,pending, met
       // window.location.reload()
     });
     // Get user id from NFT metadata
-    const userID = metadata.attributes[3].value
+    const userID = metadata.attributes ? metadata.attributes[3].value : metadata[3].value 
     console.log(userID)
     // Query the collection using userID
     const q = query(collection(database,"UserCollection"), where("username","==",userID))

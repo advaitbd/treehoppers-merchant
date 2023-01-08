@@ -33,6 +33,27 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
     couponKeys.push(mint);
   }
 
+
+  let loadingCouponElements: any[] = [];
+  
+  const loadingCouponSection = (body: any) => {
+    return <div className="flex flex-wrap justify-center">{body}</div>;
+  };
+
+  for (let i = 0; i < couponKeys.length; i++) {
+    loadingCouponElements.push(
+      <div key={i} className="m-2">
+        <Skeleton
+          animationColor="#c2c2c2"
+          backgroundColor="rgba(210, 215, 220, 1)"
+          height="450px"
+          theme="image"
+          width="256px"
+        />
+      </div>
+    );
+  }  
+
   const wallet = useWallet();
   const [couponNFTs, setCoupons] = useState<(Nft | Sft)[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +62,7 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
   useEffect(() => {
     getCoupons(couponKeys).then((coupons) => {
       console.log("fetching coupons")
-      setCoupons(coupons);
+      setCoupons(coupons);      
       setLoading(false);
     });
 
@@ -97,6 +118,8 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
     const nfts = await metaplex.nfts().findAllByMintList({ mints: addresses });
     let loadedNFTs = [];
     // looping through returned NFTs and calling .load to get the metadata
+    console.log("loading coupons",loading);
+
     for (let i = 0; i < nfts.length; i++) {
       const loadedNFT = await metaplex.nfts().load({ metadata: nfts[i] as Metadata<JsonMetadata<string>>});
       loadedNFTs.push(loadedNFT);
@@ -115,7 +138,7 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
           couponElements.push(
             <NftCard
               key={i}
-              address={addresses[i]}
+              address={coupons[i].address.toString()}
               name={coupons[i].name}
               symbol={coupons[i].symbol}
               imageURI={coupons[i].uri}
@@ -129,7 +152,7 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
         couponElements.push(
           <NftCard
             key={i}
-            address={addresses[i]}
+            address={coupons[i].address.toString()}
             name={coupons[i].name}
             symbol={coupons[i].symbol}
             imageURI={coupons[i].uri}
@@ -147,23 +170,6 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
     return <div className="flex flex-wrap justify-center">{body}</div>;
   };
 
-  let loadingCouponElements: any[] = [];
-  for (let i = 0; i < 1; i++) {
-    loadingCouponElements.push(
-      <div key={i} className="m-2">
-        <Skeleton
-          animationColor="#c2c2c2"
-          backgroundColor="rgba(210, 215, 220, 1)"
-          height="450px"
-          theme="image"
-          width="256px"
-        />
-      </div>
-    );
-  }
-  const loadingCouponSection = (body: any) => {
-    return <div className="flex flex-wrap justify-center">{body}</div>;
-  };
 
   // upload document to firebase
   const uploadData = (data: any) => {
@@ -187,7 +193,7 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
         </h1> */}
                 {refreshing ? (
           <div
-            className="flex justify-center mx-80 my-2"
+            className="flex justify-center mx-20 my-2"
             style={{
               backgroundColor: "#c1f4de",
               borderRadius: "8px",

@@ -28,9 +28,11 @@ export default function Home() {
       let addresses = [];
       for (let i = 0; i < coupons.length; i++) {
         if (coupons[i].pending == true) {
+          console.log(coupons[i])
           addresses.push(coupons[i].mintAddress);
         }
       }
+      console.log("pending: ",addresses)
       return addresses;
     });
   }

@@ -65,7 +65,7 @@ export default function Home() {
         <NavBar />
         {loading ? (
           <div
-            className="flex justify-center mx-80"
+            className="flex justify-center mx-80 my-4"
             style={{
               backgroundColor: "#efefef",
               borderRadius: "8px",

@@ -19,30 +19,30 @@ export default function NavBar() {
     <>
       <nav className="bg-green-400 py-6 flex flex-wrap items-center justify-center dark:bg-[#121212]">
       <Link
-          className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
+          className={`px-4 py-2 text-white rounded-lg hover:bg-green-100 hover:text-gray-500 transition-all ${
             router.pathname === "/landingPage"
-              ? "text-gray-800 font-bold dark:text-white"
-              : "text-gray-600 dark:text-gray-400"
+              ? "text-white font-bold dark:text-white"
+              : "text-white dark:text-gray-400"
           }`}
           href="/landingPage"
         >
           Home
         </Link>        
       <Link
-          className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
+          className={`px-4 py-2 text-white rounded-lg hover:bg-green-100 hover:text-gray-500 transition-all ${
             router.pathname === "/addCoupon"
-              ? "text-gray-800 font-bold dark:text-white"
-              : "text-gray-600 dark:text-gray-400"
+              ? "text-white font-bold dark:text-white"
+              : "text-white dark:text-gray-400"
           }`}
           href="/addCoupon"
         >
           Add Coupon
         </Link>
         <Link
-          className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
+          className={`px-4 py-2 text-white rounded-lg hover:bg-green-100 hover:text-gray-500 transition-all ${
             router.pathname === "/"
-              ? "text-gray-800 font-bold dark:text-white"
-              : "text-gray-600 dark:text-gray-400"
+              ? "text-white font-bold dark:text-white"
+              : "text-white dark:text-gray-400"
           }`}
           href="/"
         >
@@ -50,10 +50,10 @@ export default function NavBar() {
         </Link>
 
         <Link
-          className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
+          className={`px-4 py-2 text-white rounded-lg hover:bg-green-100 hover:text-gray-500 transition-all ${
             router.pathname === "/pending"
-              ? "text-gray-800 font-bold dark:text-white"
-              : "text-gray-600 dark:text-gray-400"
+              ? "text-white font-bold dark:text-white"
+              : "text-white dark:text-gray-400"
           }`}
           href="/pending"
         >
@@ -63,7 +63,7 @@ export default function NavBar() {
         <WalletMultiButtonDynamic />
 
 
-        <div className="px-4 py-2">
+        {/* <div className="px-4 py-2">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="w-9 h-9 bg-gray-200 rounded-lg dark:bg-gray-600 flex items-center justify-center hover:ring-2 ring-gray-300 transition-all "
@@ -92,7 +92,7 @@ export default function NavBar() {
               )}
             </svg>
           </button>
-        </div>
+        </div> */}
       </nav>
     </>
   );

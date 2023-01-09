@@ -195,7 +195,7 @@ export default function Dashboard({ addresses, pending }: DashBoardProps) {
 
   return (
     <>
-      <div className="flex w-1/2 flex-col justify-center text-center">
+      <div className="flex w-1/2 flex-col justify-center text-center my-2">
         {/* <h1 className="font-bold text-gray-800 text-5xl m-4 text-center dark:text-white">
           Currently Minted Coupons
         </h1> */}

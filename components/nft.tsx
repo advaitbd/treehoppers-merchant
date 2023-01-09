@@ -97,7 +97,7 @@ export default function NftCard({
 
         // New metadata
         const newMetadata =
-          "https://ipfs.io/ipfs/QmcA9yuiU9x4bQWVvSwpzwh4RjnmbXqFmvJdgfbSpy4QZt";
+          "https://ipfs.io/ipfs/QmY2D95imgay3co719XUJsi6HX2ukG2zTUoF8xpLJKipnn";
 
         // Connect to Devnet
         const connection = new Connection(clusterApiUrl("devnet"));

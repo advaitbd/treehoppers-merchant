@@ -17,7 +17,7 @@ export default function NavBar() {
 
   return (
     <>
-      <nav className="bg-green py-6 flex flex-wrap items-center justify-center dark:bg-[#121212]">
+      <nav className="bg-green-400 py-6 flex flex-wrap items-center justify-center dark:bg-[#121212]">
       <Link
           className={`px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100 transition-all ${
             router.pathname === "/landingPage"

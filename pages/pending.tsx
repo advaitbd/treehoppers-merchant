@@ -40,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     if (publicKey) {
       getPendingCoupons().then((pendingAddresses) => {
-        axios.post("http://localhost:3000/retrieveMerchantsCoupons",{publicKey: publicKey?.toString()}).then((res) => {
+        axios.post("https://treehopper-backemd.onrender.com/retrieveMerchantsCoupons",{publicKey: publicKey?.toString()}).then((res) => {
           console.log(res.data.preloadedAddresses)
           const overlappingAddresses = res.data.preloadedAddresses.filter((address: any) => pendingAddresses.includes(address))
           setMintAddresses(overlappingAddresses)

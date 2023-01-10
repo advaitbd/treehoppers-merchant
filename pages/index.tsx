@@ -17,7 +17,7 @@ export default function Home() {
 
   useEffect(() => {
     if (publicKey) {
-      axios.post("http://localhost:3000/retrieveMerchantsCoupons",{publicKey: publicKey?.toString()}).then((res) => {
+      axios.post("https://treehopper-backemd.onrender.com/retrieveMerchantsCoupons",{publicKey: publicKey?.toString()}).then((res) => {
         console.log(res.data.preloadedAddresses)
         setMintAddresses(res.data.preloadedAddresses)
         setLoading(false);
